@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prueba XSS PS4</title>
+</head>
+<body>
+  <h1>Prueba de XSS en PS4</h1>
+  <p>Introduce algo en el campo y presiona "Enviar".</p>
+  
+  <!-- Campo de entrada vulnerable a XSS -->
+  <form id="testForm">
+    <label for="inputField">Texto: </label>
+    <input type="text" id="inputField" name="inputField">
+    <input type="submit" value="Enviar">
+  </form>
+  
+  <div id="output"></div>
+
+  <script>
+    // Código JavaScript para capturar la entrada del usuario y mostrarla (XSS)
+    document.getElementById('testForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var userInput = document.getElementById('inputField').value;
+      document.getElementById('output').innerHTML = userInput; // Vulnerable a XSS
+    });
+  </script>
+</body>
+</html>
