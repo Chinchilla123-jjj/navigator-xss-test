@@ -2,53 +2,22 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revisión de Seguridad WebKit</title>
+    <title>Prueba localStorage</title>
 </head>
 <body>
-    <h1>Revisión de seguridad WebKit (Fines educativos)</h1>
-    <p id="result"></p>
+    <h1>Almacenar datos en localStorage</h1>
+    <input type="text" id="usuario" placeholder="Nombre de usuario">
+    <input type="text" id="email" placeholder="Correo electrónico">
+    <button id="guardar">Guardar en localStorage</button>
 
     <script>
-        // Función para verificar si algunas características de seguridad están habilitadas
-        function checkSecurity() {
-            const resultElement = document.getElementById("result");
-            let securityStatus = "El navegador parece ser seguro. No se detectaron vulnerabilidades.";
-
-            // Comprobación de características de seguridad
-            try {
-                // Detecta si el navegador está utilizando una API insegura (esto es solo un ejemplo)
-                if (window.localStorage && window.localStorage.getItem("test") === null) {
-                    securityStatus = "¡Posible vulnerabilidad! El navegador tiene habilitado localStorage, que podría ser explotado si no está asegurado correctamente.";
-                }
-
-                // Verificar si el navegador permite ejecución de scripts sin restricciones
-                if (typeof window.addEventListener === 'undefined') {
-                    securityStatus = "¡Posible vulnerabilidad! El navegador no está manejando eventos correctamente, lo que podría permitir la inyección de código.";
-                }
-
-                // Comprobación de características de WebKit específicas
-                if (navigator.userAgent.includes("WebKit")) {
-                    securityStatus += "<br>WebKit detectado. Verifique si hay actualizaciones de seguridad disponibles para su navegador.";
-                } else {
-                    securityStatus += "<br>No se detectó WebKit en el navegador.";
-                }
-
-                // Revisión de APIs inseguras
-                if (window.XMLHttpRequest) {
-                    securityStatus += "<br>El navegador tiene soporte para XMLHttpRequest, lo que podría ser explotado si no se validan correctamente las solicitudes de red.";
-                }
-            } catch (error) {
-                securityStatus = "Error al verificar seguridad: " + error.message;
-            }
-
-            resultElement.innerHTML = securityStatus;
-        }
-
-        // Llamar la función de verificación al cargar la página
-        window.onload = checkSecurity;
+        // Guardar datos en localStorage
+        document.getElementById('guardar').addEventListener('click', function() {
+            let usuario = document.getElementById('usuario').value;
+            let email = document.getElementById('email').value;
+            localStorage.setItem('usuario', JSON.stringify({nombre: usuario, email: email}));
+            alert('Datos guardados en localStorage');
+        });
     </script>
-    <script>alert("Payload ejecutado")</script>
-    
 </body>
 </html>
