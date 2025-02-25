@@ -1,44 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Notificación</title>
-</head>
-<body>
-    <button id="sendNotification">Enviar Notificación</button>
-
+    <title>Notificación de APIs</title>
     <script>
-        // Verificar si el navegador soporta notificaciones
-        if ('Notification' in window) {
-            // Función para solicitar permiso de notificación
-            function requestNotificationPermission() {
+        // Verifica si la API de notificaciones está disponible en el navegador
+        function checkAPIs() {
+            if ("Notification" in window && "serviceWorker" in navigator && "geolocation" in navigator) {
+                // Si las APIs están disponibles, mostrar una notificación
+                showNotification();
+            } else {
+                alert("Si estas leyendo esto, Algunas API no estan disponibles y no hay posibles vulnerabilidades");
+            }
+        }
+
+        // Función para mostrar una notificación
+        function showNotification() {
+            // Solicitar permiso para mostrar notificaciones si no se ha dado aún
+            if (Notification.permission === "granted") {
+                new Notification("Si Estas Leyendo Esto, Las API fueron habilitadas correctamente y Es posible que haya una vulnerabilidad");
+            } else if (Notification.permission !== "denied") {
                 Notification.requestPermission().then(function(permission) {
                     if (permission === "granted") {
-                        showNotification();
+                        new Notification("Si Estas Leyendo Esto, Las API fueron habilitadas correctamente y Es posible que haya una vulnerabilidad");
                     }
                 });
             }
-
-            // Función para mostrar la notificación
-            function showNotification() {
-                var options = {
-                    body: "Esta es una notificación enviada desde la web.",
-                    icon: "https://example.com/icon.png",
-                    tag: "example-notification",
-                };
-                
-                var notification = new Notification("¡Hola desde la Web!", options);
-            }
-
-            // Cuando el botón es presionado, pedir permiso y mostrar la notificación
-            document.getElementById("sendNotification").addEventListener("click", function() {
-                requestNotificationPermission();
-            });
-        } else {
-            alert("Felicidades capo, el script funciona.");
         }
+
+        // Llamar a la función de verificación cuando se carga la página
+        window.onload = checkAPIs;
     </script>
+</head>
+<body>
+    <h1>Comprobación de APIs del navegador</h1>
+    <p>Este código comprueba si las APIs clave están disponibles en el navegador, como la API de Notificaciones, Geolocalización y Service Workers.</p>
 </body>
 </html>
-
