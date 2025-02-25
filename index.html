@@ -3,26 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificación PS4</title>
+    <title>Revisión de Seguridad WebKit</title>
 </head>
 <body>
-    <h1>Ejemplo de Notificación para PS4</h1>
+    <h1>Revisión de seguridad WebKit (Fines educativos)</h1>
+    <p id="result"></p>
+
     <script>
-        if (Notification.permission === "granted") {
-            new Notification("¡Notificación desde JavaScript!", {
-                body: "Este es un ejemplo educativo.",
-                icon: "https://example.com/icono.png"
-            });
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    new Notification("¡Notificación desde JavaScript!", {
-                        body: "Este es un ejemplo educativo.",
-                        icon: "https://example.com/icono.png"
-                    });
+        // Función para verificar si algunas características de seguridad están habilitadas
+        function checkSecurity() {
+            const resultElement = document.getElementById("result");
+            let securityStatus = "El navegador parece ser seguro. No se detectaron vulnerabilidades.";
+
+            // Comprobación de características de seguridad
+            try {
+                // Detecta si el navegador está utilizando una API insegura (esto es solo un ejemplo)
+                if (window.localStorage && window.localStorage.getItem("test") === null) {
+                    securityStatus = "¡Posible vulnerabilidad! El navegador tiene habilitado localStorage, que podría ser explotado si no está asegurado correctamente.";
                 }
-            });
+
+                // Verificar si el navegador permite ejecución de scripts sin restricciones
+                if (typeof window.addEventListener === 'undefined') {
+                    securityStatus = "¡Posible vulnerabilidad! El navegador no está manejando eventos correctamente, lo que podría permitir la inyección de código.";
+                }
+
+                // Comprobación de características de WebKit específicas
+                if (navigator.userAgent.includes("WebKit")) {
+                    securityStatus += "<br>WebKit detectado. Verifique si hay actualizaciones de seguridad disponibles para su navegador.";
+                } else {
+                    securityStatus += "<br>No se detectó WebKit en el navegador.";
+                }
+
+                // Revisión de APIs inseguras
+                if (window.XMLHttpRequest) {
+                    securityStatus += "<br>El navegador tiene soporte para XMLHttpRequest, lo que podría ser explotado si no se validan correctamente las solicitudes de red.";
+                }
+            } catch (error) {
+                securityStatus = "Error al verificar seguridad: " + error.message;
+            }
+
+            resultElement.innerHTML = securityStatus;
         }
+
+        // Llamar la función de verificación al cargar la página
+        window.onload = checkSecurity;
     </script>
 </body>
 </html>
