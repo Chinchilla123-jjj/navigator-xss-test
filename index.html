@@ -19,10 +19,6 @@
             alert('Datos guardados en localStorage');
         });
     </script>
-    <script>
-  var datos = localStorage.getItem('usuario');
-  alert('Datos robados: ' + datos);
-    </script>
-    <script>alert("Payload ejecutado")</script>
+    <input type="text" name="consulta" value="<script>alert('XSS')</script>">
 </body>
 </html>
