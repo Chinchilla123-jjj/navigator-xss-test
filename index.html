@@ -1,30 +1,44 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prueba XSS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Notificación</title>
 </head>
 <body>
-  <h1>Prueba de XSS</h1>
-  <p>Introduce algo en el campo y presiona "Enviar".</p>
-  
-  <!-- Campo de entrada vulnerable a XSS -->
-  <form id="testForm">
-    <label for="inputField">Texto: </label>
-    <input type="text" id="inputField" name="inputField">
-    <input type="submit" value="Enviar">
-  </form>
-  
-  <div id="output"></div>
+    <button id="sendNotification">Enviar Notificación</button>
 
-  <script>
-    // Código JavaScript para capturar la entrada del usuario y mostrarla (XSS)
-    document.getElementById('testForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      var userInput = document.getElementById('inputField').value;
-      document.getElementById('output').innerHTML = userInput; // Vulnerabilidad Encontrada
-    });
-  </script>
+    <script>
+        // Verificar si el navegador soporta notificaciones
+        if ('Notification' in window) {
+            // Función para solicitar permiso de notificación
+            function requestNotificationPermission() {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === "granted") {
+                        showNotification();
+                    }
+                });
+            }
+
+            // Función para mostrar la notificación
+            function showNotification() {
+                var options = {
+                    body: "Esta es una notificación enviada desde la web.",
+                    icon: "https://example.com/icon.png",
+                    tag: "example-notification",
+                };
+                
+                var notification = new Notification("¡Hola desde la Web!", options);
+            }
+
+            // Cuando el botón es presionado, pedir permiso y mostrar la notificación
+            document.getElementById("sendNotification").addEventListener("click", function() {
+                requestNotificationPermission();
+            });
+        } else {
+            alert("El navegador no soporta notificaciones.");
+        }
+    </script>
 </body>
 </html>
+
