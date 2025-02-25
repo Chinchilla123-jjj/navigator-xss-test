@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba de Payloads de Java Script</title>
+    <title>Notificación PS4</title>
 </head>
 <body>
-    <h1>Probando si el payload funciona</h1>
-    <p id="resultado"></p>
-
+    <h1>Ejemplo de Notificación para PS4</h1>
     <script>
-        if ('usb' in navigator) {
-            // La API de USB está disponebeb
-            document.getElementById('resultado').innerText = 'Si Lees Esto, La API WebUSB sigue disponible, y si es asi, se podria intentar inyeccion de codigo.';
-        } else {
-            // La API de USB no está disponible
-            document.getElementById('resultado').innerText = 'Esto de los exploits no es facil.';
+        if (Notification.permission === "granted") {
+            new Notification("¡Notificación desde JavaScript!", {
+                body: "Este es un ejemplo educativo.",
+                icon: "https://example.com/icono.png"
+            });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification("¡Notificación desde JavaScript!", {
+                        body: "Este es un ejemplo educativo.",
+                        icon: "https://example.com/icono.png"
+                    });
+                }
+            });
         }
     </script>
-    <script>alert("Payload Conseguido, Buenas Noticias, Supongo")</script>
 </body>
 </html>
