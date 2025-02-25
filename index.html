@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificar API de USB</title>
+    <title>Prueba de Payloads de Java Script</title>
 </head>
 <body>
-    <h1>Comprobando disponibilidad de la API de USB</h1>
+    <h1>Probando si el payload funciona</h1>
     <p id="resultado"></p>
 
     <script>
         if ('usb' in navigator) {
-            // La API de USB está disponible
+            // La API de USB está disponebeb
             document.getElementById('resultado').innerText = 'Si Lees Esto, La API WebUSB sigue disponible, y si es asi, se podria intentar inyeccion de codigo.';
         } else {
             // La API de USB no está disponible
-            document.getElementById('resultado').innerText = 'Si Lees Esto, La WebUSB API fue deshabilitada o parcheada, eso implica seguir trabjando en esto.';
+            document.getElementById('resultado').innerText = 'Esto de los exploits no es facil.';
         }
     </script>
     <script>alert("Payload Conseguido, Buenas Noticias, Supongo")</script>
