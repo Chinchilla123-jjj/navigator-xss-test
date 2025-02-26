@@ -1,28 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Prueba localStorage</title>
-</head>
-<body>
-    <h1>Almacenar datos en localStorage</h1>
-    <input type="text" id="usuario" placeholder="Nombre de usuario">
-    <input type="text" id="email" placeholder="Correo electrónico">
-    <button id="guardar">Guardar en localStorage</button>
-
-    <script>
-        // Guardar datos en localStorage
-        document.getElementById('guardar').addEventListener('click', function() {
-            let usuario = document.getElementById('usuario').value;
-            let email = document.getElementById('email').value;
-            localStorage.setItem('usuario', JSON.stringify({nombre: usuario, email: email}));
-            alert('Datos guardados en localStorage');
-        });
-    </script>
-    <input type="text" name="consulta" value="<script>alert('XSS')</script>">
-    <script>
-  var datos = localStorage.getItem('usuario');
-  alert('Datos robados: ' + datos);
-    </script>
+<script>
+  var payload = "A".repeat(100000); // 100,000 caracteres
+  localStorage.setItem("test", payload);
+  document.write("Guardado en localStorage");
+</script>
 </body>
 </html>
