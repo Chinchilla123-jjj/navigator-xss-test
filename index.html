@@ -3,3 +3,8 @@
   <input type="submit">
 </form>
 <input type="text" name="consulta" value="<script>alert('XSS')</script>">
+<form action="test.php" method="POST">
+  <input type="hidden" name="data" value="A".repeat(100000)">
+  <input type="submit">
+</form>
+<script>alert("Payload ejecutado")</script>
