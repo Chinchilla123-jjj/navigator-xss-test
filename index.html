@@ -1,8 +1,5 @@
-<script>
-  var payload = "A".repeat(100000); // 100,000 caracteres
-  localStorage.setItem("test", payload);
-  document.write("Guardado en localStorage");
-</script>
+<form>
+  <input type="text" name="test" value="AAAAAAAAA.... (repite 10,000 veces)">
+  <input type="submit">
+</form>
 <input type="text" name="consulta" value="<script>alert('XSS')</script>">
-</body>
-</html>
