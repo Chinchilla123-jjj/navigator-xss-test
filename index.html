@@ -20,3 +20,8 @@
 </script>
 console.log("Debug: ejecutando código...");
 <input type="text" name="consulta" value="<script>alert('XSS')</script>">
+<script>
+  let payload = "A".repeat(1000000); // 1 millón de caracteres
+  history.pushState({}, "", "?test=" + payload);
+  alert("Carga completa");
+</script>
