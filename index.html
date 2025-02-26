@@ -1,28 +1,17 @@
+<script>
+  let xhr = new XMLHttpRequest();
+  xhr.open("GET", "/test?" + "A".repeat(50000), true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) alert("Respuesta recibida: " + xhr.status);
+  };
+  xhr.send();
+        </script>
+        <script>
+  var payload = "A".repeat(100000); // 100,000 caracteres
+  localStorage.setItem("test", payload);
+  document.write("Guardado en localStorage");
+        </script>
 <form>
   <input type="text" name="test" value="AAAAAAAAA.... (repite 10,000 veces)">
   <input type="submit">
-</form>
-<input type="text" name="consulta" value="<script>alert('XSS')</script>">
-<form action="test.php" method="POST">
-  <input type="hidden" name="data" value="A".repeat(100000)">
-  <input type="submit">
-</form>
-<script>alert("Payload ejecutado")</script>
-<script>
-  window.onerror = function(message, source, lineno, colno, error) {
-    document.write("Error detectado:<br>");
-    document.write("Mensaje: " + message + "<br>");
-    document.write("Archivo: " + source + "<br>");
-    document.write("Línea: " + lineno + "<br>");
-    document.write("Columna: " + colno + "<br>");
-  };
-  throw new Error("Prueba de error en PS4");
-</script>
-console.log("Debug: ejecutando código...");
-<input type="text" name="consulta" value="<script>alert('XSS')</script>">
-<script>
-  let payload = "A".repeat(1000000); // 1 millón de caracteres
-  history.pushState({}, "", "?test=" + payload);
-  alert("Carga completa");
-</script>
-111
+        </form>
