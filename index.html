@@ -1,18 +1,29 @@
-<script>
-  let xhr = new XMLHttpRequest();
-  xhr.open("GET", "/test?" + "A".repeat(50000), true);
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4) alert("Respuesta recibida: " + xhr.status);
-  };
-  xhr.send();
-        </script>
-        <script>
-  var payload = "A".repeat(100000); // 100,000 caracteres
-  localStorage.setItem("test", payload);
-  document.write("Guardado en localStorage");
-        </script>
-<form>
-  <input type="text" name="test" value="AAAAAAAAA.... (repite 10,000 veces)">
-  <input type="submit">
-        </form>
-111
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Sistema</title>
+</head>
+<body>
+    <h1>Información del Navegador y WebKit</h1>
+    <p><strong>Agente de Usuario:</strong> <span id="userAgent"></span></p>
+    <p><strong>Versión de WebKit:</strong> <span id="webkitVersion"></span></p>
+    <p><strong>Plataforma:</strong> <span id="platform"></span></p>
+    <p><strong>Idioma:</strong> <span id="language"></span></p>
+
+    <script>
+        document.getElementById("userAgent").textContent = navigator.userAgent;
+        document.getElementById("platform").textContent = navigator.platform;
+        document.getElementById("language").textContent = navigator.language;
+
+        // Extraer la versión de WebKit del User-Agent
+        let match = navigator.userAgent.match(/AppleWebKit\/([\d.]+)/);
+        if (match) {
+            document.getElementById("webkitVersion").textContent = match[1];
+        } else {
+            document.getElementById("webkitVersion").textContent = "No detectado";
+        }
+    </script>
+</body>
+</html>
