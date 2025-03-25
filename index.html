@@ -1,29 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Información del Sistema</title>
+    <title>Prueba de XSS</title>
 </head>
 <body>
-    <h1>Información del Navegador y WebKit</h1>
-    <p><strong>Agente de Usuario:</strong> <span id="userAgent"></span></p>
-    <p><strong>Versión de WebKit:</strong> <span id="webkitVersion"></span></p>
-    <p><strong>Plataforma:</strong> <span id="platform"></span></p>
-    <p><strong>Idioma:</strong> <span id="language"></span></p>
+    <h1>Prueba de XSS</h1>
+    <form method="GET">
+        <label for="name">Escribe tu nombre:</label>
+        <input type="text" id="name" name="name">
+        <input type="submit" value="Enviar">
+    </form>
 
-    <script>
-        document.getElementById("userAgent").textContent = navigator.userAgent;
-        document.getElementById("platform").textContent = navigator.platform;
-        document.getElementById("language").textContent = navigator.language;
-
-        // Extraer la versión de WebKit del User-Agent
-        let match = navigator.userAgent.match(/AppleWebKit\/([\d.]+)/);
-        if (match) {
-            document.getElementById("webkitVersion").textContent = match[1];
-        } else {
-            document.getElementById("webkitVersion").textContent = "No detectado";
-        }
-    </script>
+    <p>Hola, <strong><?php echo htmlspecialchars($_GET['name']); ?></strong>!</p>
 </body>
 </html>
