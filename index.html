@@ -1,19 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba de XSS</title>
+    <title>Vulnerabilidad WebKit 605.1.15</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Prueba de XSS</h1>
-    <form method="GET">
-        <label for="name">Escribe tu nombre:</label>
-        <input type="text" id="name" name="name">
-        <input type="submit" value="Enviar">
-    </form>
-
-    <p>Hola, <strong><?php echo htmlspecialchars($_GET['name']); ?></strong>!</p>
+    <header>
+        <h1>Vulnerabilidad en WebKit 605.1.15</h1>
+    </header>
+    <section>
+        <h2>¿Qué es WebKit?</h2>
+        <p>WebKit es un motor de renderizado utilizado por varios navegadores web, incluido Safari en iOS y macOS, así como en el navegador de PlayStation 4. La versión 605.1.15 es una versión específica de WebKit.</p>
+    </section>
+    <section>
+        <h2>Vulnerabilidad en WebKit 605.1.15</h2>
+        <p>La vulnerabilidad en WebKit 605.1.15 se refiere a una falla en el manejo de ciertos tipos de datos, lo que puede permitir a un atacante ejecutar código malicioso en el dispositivo objetivo.</p>
+        <ul>
+            <li><strong>Riesgo:</strong> Ejecución remota de código (RCE)</li>
+            <li><strong>Explotación:</strong> Un atacante podría engañar al usuario para que visite una página web comprometida o usar scripts maliciosos que aprovechan la vulnerabilidad.</li>
+            <li><strong>Impacto:</strong> Podría resultar en el control total del dispositivo, permitiendo al atacante robar datos, instalar malware o realizar otras acciones maliciosas.</li>
+        </ul>
+    </section>
+    <section>
+        <h2>¿Qué Hace Esta Vulnerabilidad?</h2>
+        <p>La vulnerabilidad permite que un atacante ejecute código de manera remota en el dispositivo, lo que podría dar acceso completo al sistema afectado. Los atacantes pueden diseñar sitios web maliciosos o inyectar código JavaScript que explote esta vulnerabilidad cuando un usuario accede a la página.</p>
+        <p>El código malicioso puede acceder a funciones sensibles, como el almacenamiento local del navegador o incluso ejecutar comandos del sistema operativo, lo que podría comprometer la seguridad del dispositivo.</p>
+    </section>
+    <footer>
+        <p>Fecha de Descubrimiento: 2021</p>
+        <p>Referencia: <a href="https://www.cve.org/CVERecord?id=CVE-2021-3504" target="_blank">CVE-2021-3504</a></p>
+    </footer>
 </body>
 </html>
-111
