@@ -3,148 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pruebas de Sandbox y Vulnerabilidad</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-        }
-        .content {
-            padding: 20px;
-        }
-        .button {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        #log {
-            margin-top: 20px;
-            background-color: #222;
-            color: white;
-            padding: 10px;
-            font-size: 14px;
-            white-space: pre-wrap;
-        }
-    </style>
+    <title>Prueba Completa - Sandbox, Notificaciones y Puerto</title>
 </head>
 <body>
-
-    <header>
-        <h1>Pruebas de Sandbox, Notificaciones y Vulnerabilidad de Puerto</h1>
-    </header>
-
-    <div class="content">
-        <p>Esta página intenta realizar varias pruebas para detectar vulnerabilidades en el sandbox, notificaciones y puertos.</p>
-
-        <a href="#" class="button" id="checkFileAccess">Comprobar Acceso a Archivos (Sandbox)</a>
-        <a href="#" class="button" id="checkSystemCommand">Ejecutar Comando del Sistema (Sandbox)</a>
-        <a href="#" class="button" id="sendNotification">Enviar Notificación</a>
-        <a href="#" class="button" id="testPortVulnerability">Probar Vulnerabilidad de Puerto</a>
-
-        <div id="log"></div>
-    </div>
-
+    <h1>Prueba de Sandbox, Notificaciones y Acceso a Puerto</h1>
+    <p>Esta página realiza las siguientes pruebas:</p>
+    <ul>
+        <li>Comprobación de si estamos dentro de un sandbox</li>
+        <li>Envió de una notificación si no hay sandbox</li>
+        <li>Prueba de acceder a un puerto externo</li>
+    </ul>
+    
+    <button onclick="comprobarSandbox()">Comprobar Sandbox</button>
+    <button onclick="enviarNotificacion()">Enviar Notificación</button>
+    
+    <p id="resultado"></p>
+    <p id="notificacionResult"></p>
+    <p id="puertoResult"></p>
+    
     <script>
-        // Comprobación de Acceso a Archivos
-        document.getElementById('checkFileAccess').addEventListener('click', function() {
-            log('Intentando acceder a archivos locales...');
-            try {
-                const fs = new FileReader();
-                fs.readAsText(new Blob(["test"]), 'testfile.txt');
-                fs.onload = function() {
-                    log('Acceso a archivo local exitoso');
-                }
-                fs.onerror = function() {
-                    log('No se pudo acceder a los archivos locales. Está bloqueado por el sandbox.');
-                };
-            } catch (error) {
-                log('No se pudo acceder a los archivos locales. Error: ' + error);
-            }
-        });
+        // Comprobar si estamos en un sandbox
+        function comprobarSandbox() {
+            let sandboxDetectado = false;
 
-        // Comando del Sistema
-        document.getElementById('checkSystemCommand').addEventListener('click', function() {
-            log('Intentando ejecutar un comando del sistema...');
+            // Intentamos acceder a localStorage (una prueba de si estamos en sandbox)
             try {
-                if (typeof window.execCommand !== 'undefined') {
-                    window.execCommand('echo "Comando ejecutado"');
-                    log('Comando del sistema ejecutado con éxito.');
+                localStorage.setItem('test', 'prueba');
+                localStorage.removeItem('test');
+            } catch (e) {
+                sandboxDetectado = true; // Si falla, estamos en un sandbox
+            }
+
+            // Mostrar el resultado de la comprobación
+            const resultadoElement = document.getElementById('resultado');
+            if (sandboxDetectado) {
+                resultadoElement.innerText = "¡Se ha detectado un sandbox!";
+            } else {
+                resultadoElement.innerText = "No se detecta un sandbox.";
+                // Intentar realizar una petición externa
+                realizarPeticion();
+            }
+        }
+
+        // Hacer una petición externa (si el sandbox lo permite)
+        function realizarPeticion() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://jsonplaceholder.typicode.com/todos/1', true); // URL pública para probar
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log('Respuesta:', xhr.responseText);
+                    // Si la petición se realiza con éxito, intentar abrir un puerto
+                    probarPuerto();
+                }
+            };
+            xhr.send();
+        }
+
+        // Función para probar un puerto (esto es solo una simulación, en un navegador no puede abrir un puerto directamente)
+        function probarPuerto() {
+            const puerto = 8080; // Puerto a probar
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `http://localhost:${puerto}`, true); // Intentando acceder al puerto
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById('puertoResult').innerText = `Puerto ${puerto} accesible.`;
                 } else {
-                    log('El sandbox bloquea la ejecución de comandos del sistema.');
+                    document.getElementById('puertoResult').innerText = `Puerto ${puerto} no accesible.`;
                 }
-            } catch (error) {
-                log('No se pudo ejecutar el comando del sistema. Error: ' + error);
-            }
-        });
+            };
+            xhr.send();
+        }
 
-        // Enviar Notificación
-        document.getElementById('sendNotification').addEventListener('click', function() {
-            log('Intentando enviar una notificación...');
-            if (Notification.permission === 'granted') {
-                new Notification('Notificación de prueba', {
-                    body: '¡Has recibido una notificación!',
-                    icon: 'https://via.placeholder.com/150'
+        // Enviar una notificación (solo si no estamos en sandbox)
+        function enviarNotificacion() {
+            if (Notification.permission === "granted") {
+                const notification = new Notification("Notificación de Prueba", {
+                    body: "Esta es una prueba de notificación.",
+                    icon: "https://via.placeholder.com/100"
                 });
-                log('Notificación enviada con éxito.');
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission().then(function(permission) {
-                    if (permission === 'granted') {
-                        new Notification('Notificación de prueba', {
-                            body: '¡Has recibido una notificación!',
-                            icon: 'https://via.placeholder.com/150'
+                document.getElementById('notificacionResult').innerText = "Notificación enviada.";
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        const notification = new Notification("Notificación de Prueba", {
+                            body: "Esta es una prueba de notificación.",
+                            icon: "https://via.placeholder.com/100"
                         });
-                        log('Notificación enviada con éxito.');
+                        document.getElementById('notificacionResult').innerText = "Notificación enviada.";
                     } else {
-                        log('Permiso de notificación denegado.');
+                        document.getElementById('notificacionResult').innerText = "No se otorgó permiso para notificaciones.";
                     }
                 });
             } else {
-                log('Permiso de notificación denegado.');
+                document.getElementById('notificacionResult').innerText = "Notificaciones denegadas.";
             }
-        });
-
-        // Probar Vulnerabilidad de Puerto
-        document.getElementById('testPortVulnerability').addEventListener('click', function() {
-            log('Intentando acceder a un puerto...');
-
-            // Esta prueba solo simula un intento de conexión a un puerto. 
-            // Los puertos no deberían abrirse fácilmente desde una página web normal, 
-            // pero si hay una vulnerabilidad, podría ser posible.
-            try {
-                const testSocket = new WebSocket('ws://127.0.0.1:8080');
-                testSocket.onopen = function() {
-                    log('¡Puerto 8080 abierto! Esto puede indicar una vulnerabilidad de red.');
-                };
-                testSocket.onerror = function() {
-                    log('No se pudo conectar al puerto 8080. El puerto está cerrado o protegido.');
-                };
-            } catch (error) {
-                log('Error al intentar acceder al puerto: ' + error);
-            }
-        });
-
-        // Función para loggear eventos
-        function log(message) {
-            let logContainer = document.getElementById('log');
-            logContainer.textContent += message + "\n";
         }
     </script>
-
 </body>
 </html>
