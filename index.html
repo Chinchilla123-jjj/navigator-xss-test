@@ -3,36 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vulnerabilidad WebKit 605.1.15</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Pruebas de Sandbox y Vulnerabilidad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+        }
+        .button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #log {
+            margin-top: 20px;
+            background-color: #222;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
 <body>
+
     <header>
-        <h1>Vulnerabilidad en WebKit 605.1.15</h1>
+        <h1>Pruebas de Sandbox, Notificaciones y Vulnerabilidad de Puerto</h1>
     </header>
-    <section>
-        <h2>¿Qué es WebKit?</h2>
-        <p>WebKit es un motor de renderizado utilizado por varios navegadores web, incluido Safari en iOS y macOS, así como en el navegador de PlayStation 4. La versión 605.1.15 es una versión específica de WebKit.</p>
-    </section>
-    <section>
-        <h2>Vulnerabilidad en WebKit 605.1.15</h2>
-        <p>La vulnerabilidad en WebKit 605.1.15 se refiere a una falla en el manejo de ciertos tipos de datos, lo que puede permitir a un atacante ejecutar código malicioso en el dispositivo objetivo.</p>
-        <ul>
-            <li><strong>Riesgo:</strong> Ejecución remota de código (RCE)</li>
-            <li><strong>Explotación:</strong> Un atacante podría engañar al usuario para que visite una página web comprometida o usar scripts maliciosos que aprovechan la vulnerabilidad.</li>
-            <li><strong>Impacto:</strong> Podría resultar en el control total del dispositivo, permitiendo al atacante robar datos, instalar malware o realizar otras acciones maliciosas.</li>
-        </ul>
-    </section>
-    <section>
-        <h2>¿Qué Hace Esta Vulnerabilidad?</h2>
-        <p>La vulnerabilidad permite que un atacante ejecute código de manera remota en el dispositivo, lo que podría dar acceso completo al sistema afectado. Los atacantes pueden diseñar sitios web maliciosos o inyectar código JavaScript que explote esta vulnerabilidad cuando un usuario accede a la página.</p>
-        <p>El código malicioso puede acceder a funciones sensibles, como el almacenamiento local del navegador o incluso ejecutar comandos del sistema operativo, lo que podría comprometer la seguridad del dispositivo.</p>
-    </section>
-    <footer>
-        <p>Fecha de Descubrimiento: 2021</p>
-        <p>Referencia: <a href="https://www.cve.org/CVERecord?id=CVE-2021-3504" target="_blank">CVE-2021-3504</a></p>
-    </footer>
+
+    <div class="content">
+        <p>Esta página intenta realizar varias pruebas para detectar vulnerabilidades en el sandbox, notificaciones y puertos.</p>
+
+        <a href="#" class="button" id="checkFileAccess">Comprobar Acceso a Archivos (Sandbox)</a>
+        <a href="#" class="button" id="checkSystemCommand">Ejecutar Comando del Sistema (Sandbox)</a>
+        <a href="#" class="button" id="sendNotification">Enviar Notificación</a>
+        <a href="#" class="button" id="testPortVulnerability">Probar Vulnerabilidad de Puerto</a>
+
+        <div id="log"></div>
+    </div>
+
+    <script>
+        // Comprobación de Acceso a Archivos
+        document.getElementById('checkFileAccess').addEventListener('click', function() {
+            log('Intentando acceder a archivos locales...');
+            try {
+                const fs = new FileReader();
+                fs.readAsText(new Blob(["test"]), 'testfile.txt');
+                fs.onload = function() {
+                    log('Acceso a archivo local exitoso');
+                }
+                fs.onerror = function() {
+                    log('No se pudo acceder a los archivos locales. Está bloqueado por el sandbox.');
+                };
+            } catch (error) {
+                log('No se pudo acceder a los archivos locales. Error: ' + error);
+            }
+        });
+
+        // Comando del Sistema
+        document.getElementById('checkSystemCommand').addEventListener('click', function() {
+            log('Intentando ejecutar un comando del sistema...');
+            try {
+                if (typeof window.execCommand !== 'undefined') {
+                    window.execCommand('echo "Comando ejecutado"');
+                    log('Comando del sistema ejecutado con éxito.');
+                } else {
+                    log('El sandbox bloquea la ejecución de comandos del sistema.');
+                }
+            } catch (error) {
+                log('No se pudo ejecutar el comando del sistema. Error: ' + error);
+            }
+        });
+
+        // Enviar Notificación
+        document.getElementById('sendNotification').addEventListener('click', function() {
+            log('Intentando enviar una notificación...');
+            if (Notification.permission === 'granted') {
+                new Notification('Notificación de prueba', {
+                    body: '¡Has recibido una notificación!',
+                    icon: 'https://via.placeholder.com/150'
+                });
+                log('Notificación enviada con éxito.');
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') {
+                        new Notification('Notificación de prueba', {
+                            body: '¡Has recibido una notificación!',
+                            icon: 'https://via.placeholder.com/150'
+                        });
+                        log('Notificación enviada con éxito.');
+                    } else {
+                        log('Permiso de notificación denegado.');
+                    }
+                });
+            } else {
+                log('Permiso de notificación denegado.');
+            }
+        });
+
+        // Probar Vulnerabilidad de Puerto
+        document.getElementById('testPortVulnerability').addEventListener('click', function() {
+            log('Intentando acceder a un puerto...');
+
+            // Esta prueba solo simula un intento de conexión a un puerto. 
+            // Los puertos no deberían abrirse fácilmente desde una página web normal, 
+            // pero si hay una vulnerabilidad, podría ser posible.
+            try {
+                const testSocket = new WebSocket('ws://127.0.0.1:8080');
+                testSocket.onopen = function() {
+                    log('¡Puerto 8080 abierto! Esto puede indicar una vulnerabilidad de red.');
+                };
+                testSocket.onerror = function() {
+                    log('No se pudo conectar al puerto 8080. El puerto está cerrado o protegido.');
+                };
+            } catch (error) {
+                log('Error al intentar acceder al puerto: ' + error);
+            }
+        });
+
+        // Función para loggear eventos
+        function log(message) {
+            let logContainer = document.getElementById('log');
+            logContainer.textContent += message + "\n";
+        }
+    </script>
+
 </body>
 </html>
-111
-111
