@@ -1,105 +1,31 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prueba Completa - Sandbox, Notificaciones y Puerto</title>
+    <title>Consola JS</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #output { width: 80%; height: 200px; border: 1px solid black; overflow: auto; margin: 10px auto; padding: 10px; }
+        #input { width: 80%; padding: 5px; }
+    </style>
 </head>
 <body>
-    <h1>Prueba de Sandbox, Notificaciones y Acceso a Puerto</h1>
-    <p>Esta página realiza las siguientes pruebas:</p>
-    <ul>
-        <li>Comprobación de si estamos dentro de un sandbox</li>
-        <li>Envió de una notificación si no hay sandbox</li>
-        <li>Prueba de acceder a un puerto externo</li>
-    </ul>
-    
-    <button onclick="comprobarSandbox()">Comprobar Sandbox</button>
-    <button onclick="enviarNotificacion()">Enviar Notificación</button>
-    
-    <p id="resultado"></p>
-    <p id="notificacionResult"></p>
-    <p id="puertoResult"></p>
-    
-    <script>
-        // Comprobar si estamos en un sandbox
-        function comprobarSandbox() {
-            let sandboxDetectado = false;
-
-            // Intentamos acceder a localStorage (una prueba de si estamos en sandbox)
-            try {
-                localStorage.setItem('test', 'prueba');
-                localStorage.removeItem('test');
-            } catch (e) {
-                sandboxDetectado = true; // Si falla, estamos en un sandbox
-            }
-
-            // Mostrar el resultado de la comprobación
-            const resultadoElement = document.getElementById('resultado');
-            if (sandboxDetectado) {
-                resultadoElement.innerText = "¡Se ha detectado un sandbox!";
-            } else {
-                resultadoElement.innerText = "No se detecta un sandbox.";
-                // Intentar realizar una petición externa
-                realizarPeticion();
-            }
+    <h2>Consola JavaScript</h2>
+    <div id="output"></div>
+    <input type="text" id="input" placeholder="Escribe un comando JS" onkeydown="if(event.key==='Enter') runCommand()">
+    <button onclick="runCommand()">Ejecutar</button><script>
+    function runCommand() {
+        let input = document.getElementById("input").value;
+        let output = document.getElementById("output");
+        try {
+            let result = eval(input);
+            output.innerHTML += `<div>&gt; ${input}</div><div style="color:green;">${result}</div>`;
+        } catch (error) {
+            output.innerHTML += `<div>&gt; ${input}</div><div style="color:red;">Error: ${error}</div>`;
         }
+        document.getElementById("input").value = "";
+    }
+</script>
 
-        // Hacer una petición externa (si el sandbox lo permite)
-        function realizarPeticion() {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://jsonplaceholder.typicode.com/todos/1', true); // URL pública para probar
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    console.log('Respuesta:', xhr.responseText);
-                    // Si la petición se realiza con éxito, intentar abrir un puerto
-                    probarPuerto();
-                }
-            };
-            xhr.send();
-        }
-
-        // Función para probar un puerto (esto es solo una simulación, en un navegador no puede abrir un puerto directamente)
-        function probarPuerto() {
-            const puerto = 8080; // Puerto a probar
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', `http://localhost:${puerto}`, true); // Intentando acceder al puerto
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    document.getElementById('puertoResult').innerText = `Puerto ${puerto} accesible.`;
-                } else {
-                    document.getElementById('puertoResult').innerText = `Puerto ${puerto} no accesible.`;
-                }
-            };
-            xhr.send();
-        }
-
-        // Enviar una notificación (solo si no estamos en sandbox)
-        function enviarNotificacion() {
-            if (Notification.permission === "granted") {
-                const notification = new Notification("Notificación de Prueba", {
-                    body: "Esta es una prueba de notificación.",
-                    icon: "https://via.placeholder.com/100"
-                });
-                document.getElementById('notificacionResult').innerText = "Notificación enviada.";
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        const notification = new Notification("Notificación de Prueba", {
-                            body: "Esta es una prueba de notificación.",
-                            icon: "https://via.placeholder.com/100"
-                        });
-                        document.getElementById('notificacionResult').innerText = "Notificación enviada.";
-                    } else {
-                        document.getElementById('notificacionResult').innerText = "No se otorgó permiso para notificaciones.";
-                    }
-                });
-            } else {
-                document.getElementById('notificacionResult').innerText = "Notificaciones denegadas.";
-            }
-        }
-    </script>
 </body>
 </html>
-
-111
