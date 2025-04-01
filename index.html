@@ -1,33 +1,75 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consola JS</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #output { width: 80%; height: 200px; border: 1px solid black; overflow: auto; margin: 10px auto; padding: 10px; }
-        #input { width: 80%; padding: 5px; }
-    </style>
+    <title>Notificación desde USB</title>
 </head>
 <body>
-    <h2>Consola JavaScript</h2>
-    <div id="output"></div>
-    <input type="text" id="input" placeholder="Escribe un comando JS" onkeydown="if(event.key==='Enter') runCommand()">
-    <button onclick="runCommand()">Ejecutar</button><script>
-    function runCommand() {
-        let input = document.getElementById("input").value;
-        let output = document.getElementById("output");
-        try {
-            let result = eval(input);
-            output.innerHTML += `<div>&gt; ${input}</div><div style="color:green;">${result}</div>`;
-        } catch (error) {
-            output.innerHTML += `<div>&gt; ${input}</div><div style="color:red;">Error: ${error}</div>`;
-        }
-        document.getElementById("input").value = "";
-    }
-</script>
+    <h1>Inyectar Notificación desde USB</h1>
+    <input type="file" id="fileInput" accept=".json">
+    <button onclick="sendNotification()">Enviar Notificación</button>
 
+    <script>
+        // Función para procesar el archivo JSON cargado
+        function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const jsonData = JSON.parse(event.target.result);
+                    console.log(jsonData);
+                    // Validar que el JSON tiene los campos requeridos
+                    if (jsonData.title && jsonData.message) {
+                        // Llamar a la función para mostrar la notificación
+                        showNotification(jsonData);
+                    } else {
+                        console.log("El archivo JSON no tiene la estructura esperada");
+                    }
+                } catch (e) {
+                    console.log("Error al leer el archivo JSON: ", e);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Mostrar notificación usando la Notification API
+        function showNotification(data) {
+            if (Notification.permission === "granted") {
+                new Notification(data.title, {
+                    body: data.message,
+                    icon: data.icon || "https://example.com/default-icon.png"
+                });
+            } else {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification(data.title, {
+                            body: data.message,
+                            icon: data.icon || "https://example.com/default-icon.png"
+                        });
+                    }
+                });
+            }
+        }
+
+        // Función para activar la carga de archivos y procesarlos
+        document.getElementById("fileInput").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        // Función para enviar la notificación cuando se haga clic en el botón
+        function sendNotification() {
+            // Llamar a la función de notificación si ya se cargó el JSON
+            const fileInput = document.getElementById("fileInput");
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                handleFile(file);
+            } else {
+                console.log("Por favor, selecciona un archivo JSON.");
+            }
+        }
+    </script>
 </body>
 </html>
-
-xdd
